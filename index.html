@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotify Bar — Drink Your Music</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&family=Permanent+Marker&display=swap');
+
+:root{
+  --paper:#eee2c7;
+  --paper-light:#f6ecd7;
+  --green:#07543d;
+  --green2:#0b6b4c;
+  --spotify:#1ed760;
+  --ink:#12120f;
+  --red:#d82c2c;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#111;
+  color:var(--ink);
+  font-family:Inter,Arial,sans-serif;
+}
+
+.page{
+  min-height:100vh;
+  padding:38px;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(0,0,0,.05),transparent 20%),
+    radial-gradient(circle at 80% 70%,rgba(70,40,10,.08),transparent 25%),
+    #e9ddc2;
+  position:relative;
+  overflow:hidden;
+}
+
+.page:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.24;
+  pointer-events:none;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(80,50,20,.04) 0,
+      rgba(80,50,20,.04) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+}
+
+.top{
+  max-width:1280px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:20px;
+  border-bottom:4px solid var(--green);
+  padding-bottom:18px;
+  position:relative;
+  z-index:2;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.spotify-icon{
+  width:76px;
+  height:76px;
+  background:var(--green);
+  border-radius:50%;
+  position:relative;
+}
+
+.spotify-icon span{
+  position:absolute;
+  left:16px;
+  width:45px;
+  height:8px;
+  border-top:5px solid var(--paper-light);
+  border-radius:50%;
+}
+
+.spotify-icon span:nth-child(1){top:22px}
+.spotify-icon span:nth-child(2){top:34px;width:41px;left:18px}
+.spotify-icon span:nth-child(3){top:46px;width:35px;left:21px}
+
+.spotify{
+  font-size:56px;
+  line-height:.9;
+  font-weight:800;
+  letter-spacing:-3px;
+}
+
+.bar{
+  font-family:"Permanent Marker",cursive;
+  color:var(--green);
+  font-size:62px;
+  transform:rotate(-5deg);
+  margin-left:12px;
+}
+
+.tagline{
+  text-align:right;
+  font-family:"DM Serif Display",serif;
+  font-style:italic;
+  font-size:19px;
+}
+
+.main{
+  max-width:1280px;
+  margin:32px auto 0;
+  display:grid;
+  grid-template-columns:.92fr 1.08fr;
+  gap:30px;
+  position:relative;
+  z-index:2;
+}
+
+.paper{
+  background:var(--paper-light);
+  border:2px solid rgba(7,84,61,.6);
+  padding:28px;
+  box-shadow:7px 8px 0 rgba(0,0,0,.08);
+  position:relative;
+}
+
+.paper:before{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:25px;
+  background:rgba(203,181,143,.65);
+  top:-12px;
+  left:42%;
+  transform:rotate(-3deg);
+}
+
+.kicker{
+  color:var(--green);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+h1{
+  font-family:Anton,sans-serif;
+  font-weight:400;
+  color:var(--green);
+  font-size:48px;
+  line-height:1;
+  margin:8px 0 10px;
+  text-transform:uppercase;
+}
+
+.subtitle{
+  font-family:"DM Serif Display",serif;
+  font-size:19px;
+  margin-bottom:25px;
+}
+
+.step{
+  border-top:1px solid rgba(0,0,0,.35);
+  padding-top:20px;
+  margin-top:20px;
+}
+
+.step-title{
+  font-family:Anton,sans-serif;
+  font-size:20px;
+  color:var(--green);
+  letter-spacing:.5px;
+  margin-bottom:13px;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.option input,
+.mood input{
+  display:none;
+}
+
+.option label{
+  display:block;
+  border:2px solid rgba(7,84,61,.38);
+  background:#efe3c8;
+  padding:12px 14px;
+  cursor:pointer;
+  transition:.15s;
+  min-height:67px;
+}
+
+.option label:hover{
+  transform:rotate(-1deg);
+  border-color:var(--green);
+}
+
+.option input:checked + label{
+  color:#fff;
+  background:var(--green);
+  border-color:var(--green);
+  transform:rotate(-1deg);
+}
+
+.option strong{
+  display:block;
+  font-size:15px;
+}
+
+.option small{
+  display:block;
+  margin-top:4px;
+  opacity:.75;
+  font-family:"DM Serif Display",serif;
+  font-style:italic;
+  font-size:13px;
+}
+
+.moods{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.mood label{
+  display:block;
+  padding:9px 15px;
+  border:2px solid var(--green);
+  border-radius:100px;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+}
+
+.mood input:checked + label{
+  background:var(--green);
+  color:white;
+}
+
+.generate{
+  width:100%;
+  margin-top:25px;
+  border:0;
+  background:var(--green);
+  color:white;
+  padding:17px;
+  font-family:Anton,sans-serif;
+  font-size:22px;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.generate:hover{
+  background:#063d2e;
+  transform:translateY(-2px);
+}
+
+.hand{
+  font-family:"Permanent Marker",cursive;
+  color:var(--red);
+  font-size:20px;
+  transform:rotate(-3deg);
+  margin:16px 0 0;
+}
+
+/* MENU */
+
+.menu{
+  background:var(--green);
+  padding:23px;
+  position:relative;
+}
+
+.menu-title{
+  color:var(--paper-light);
+  font-family:Anton,sans-serif;
+  font-size:31px;
+  letter-spacing:.5px;
+}
+
+.menu-sub{
+  color:var(--paper);
+  font-family:"DM Serif Display",serif;
+  font-style:italic;
+  margin:4px 0 18px;
+}
+
+.drink-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.drink-card{
+  background:var(--paper-light);
+  padding:15px;
+  min-height:155px;
+  position:relative;
+  transition:.2s;
+}
+
+.drink-card.active{
+  outline:6px solid var(--spotify);
+  transform:rotate(-1deg) scale(1.01);
+  z-index:2;
+}
+
+.drink-type{
+  color:var(--red);
+  font-family:Anton,sans-serif;
+  font-size:20px;
+}
+
+.price{
+  float:right;
+  color:var(--ink);
+  font-family:Inter,sans-serif;
+  font-size:13px;
+  font-weight:800;
+}
+
+.ingredients{
+  margin-top:8px;
+  font-family:"DM Serif Display",serif;
+  line-height:1.35;
+  font-size:13px;
+  padding-right:8px;
+}
+
+.desc{
+  margin-top:10px;
+  font-family:"DM Serif Display",serif;
+  font-style:italic;
+  font-size:14px;
+}
+
+.doodle{
+  position:absolute;
+  right:10px;
+  bottom:6px;
+  color:var(--red);
+  font-family:"Permanent Marker",cursive;
+  font-size:23px;
+  transform:rotate(-10deg);
+}
+
+/* RESULT */
+
+.result{
+  max-width:1280px;
+  margin:30px auto 0;
+  display:none;
+  grid-template-columns:.7fr 1.3fr;
+  background:var(--paper-light);
+  border:3px solid var(--green);
+  position:relative;
+  z-index:3;
+}
+
+.result.show{
+  display:grid;
+}
+
+.result-left{
+  background:var(--green);
+  color:white;
+  padding:34px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:330px;
+}
+
+.glass{
+  width:155px;
+  height:205px;
+  border:7px solid rgba(255,255,255,.85);
+  border-top-width:4px;
+  border-radius:12px 12px 42px 42px;
+  position:relative;
+  overflow:hidden;
+}
+
+.liquid{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:72%;
+  background:#358bc0;
+}
+
+.ice{
+  position:absolute;
+  width:40px;
+  height:40px;
+  border:3px solid rgba(255,255,255,.65);
+  transform:rotate(30deg);
+}
+
+.ice.one{left:17px;top:80px}
+.ice.two{right:17px;top:105px}
+
+.music-lines{
+  margin-top:20px;
+  font-family:"Permanent Marker",cursive;
+  color:var(--paper-light);
+  font-size:17px;
+  transform:rotate(-2deg);
+}
+
+.result-right{
+  padding:30px 35px;
+  position:relative;
+}
+
+.for-you{
+  font-weight:800;
+  color:var(--green);
+  font-size:14px;
+}
+
+.result h2{
+  font-family:Anton,sans-serif;
+  color:var(--green);
+  font-size:43px;
+  margin:5px 0;
+  font-weight:400;
+}
+
+.profile{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:13px 0 20px;
+}
+
+.profile span{
+  border:1px solid #9b8f76;
+  border-radius:100px;
+  padding:5px 10px;
+  font-size:12px;
+}
+
+.match-label{
+  color:var(--green);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:1.4px;
+  margin-bottom:5px;
+}
+
+.signature-match{
+  font-family:"DM Serif Display",serif;
+  font-size:17px;
+  font-weight:bold;
+  margin-bottom:16px;
+}
+
+.result-ingredients{
+  font-family:"DM Serif Display",serif;
+  font-size:17px;
+  line-height:1.5;
+}
+
+.result-story{
+  font-family:"DM Serif Display",serif;
+  font-style:italic;
+  font-size:18px;
+  line-height:1.5;
+  margin-top:15px;
+  max-width:650px;
+}
+
+.result-price{
+  font-family:Anton,sans-serif;
+  color:var(--green);
+  font-size:24px;
+  margin-top:20px;
+}
+
+.result-hand{
+  position:absolute;
+  right:25px;
+  top:20px;
+  color:var(--red);
+  font-family:"Permanent Marker",cursive;
+  font-size:23px;
+  transform:rotate(7deg);
+}
+
+.footer{
+  max-width:1280px;
+  margin:28px auto 0;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:#4f493d;
+  position:relative;
+  z-index:2;
+}
+
+@media(max-width:900px){
+  .main{grid-template-columns:1fr}
+  .result{grid-template-columns:1fr}
+  .spotify{font-size:38px}
+  .bar{font-size:43px}
+  .spotify-icon{width:58px;height:58px}
+  .tagline{display:none}
+}
+
+@media(max-width:520px){
+  .page{padding:18px}
+  .options,.drink-grid{grid-template-columns:1fr}
+  h1{font-size:39px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="top">
+  <div class="brand">
+
+    <div class="spotify-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div>
+      <span class="spotify">Spotify</span>
+      <span class="bar">Bar</span>
+    </div>
+
+  </div>
+
+  <div class="tagline">
+    Good Music.<br>
+    Great Drinks.<br>
+    Better Company.
+  </div>
+</header>
+
+
+<div class="main">
+
+<!-- LEFT -->
+<section class="paper">
+
+  <div class="kicker">
+    YOUR MUSIC · YOUR MOOD · YOUR DRINK
+  </div>
+
+  <h1>
+    WHAT'S YOUR<br>
+    DRINK TONIGHT?
+  </h1>
+
+  <div class="subtitle">
+    Tell us what you've been listening to lately.<br>
+    We'll turn your music taste into a drink.
+  </div>
+
+
+  <div class="step">
+
+    <div class="step-title">
+      01 / WHAT HAVE YOU BEEN LISTENING TO?
+    </div>
+
+    <div class="options">
+
+      <div class="option">
+        <input type="radio" id="rnb" name="music" value="rnb" checked>
+        <label for="rnb">
+          <strong>R&B / Soul</strong>
+          <small>Smooth · emotional · soulful</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="kpop" name="music" value="kpop">
+        <label for="kpop">
+          <strong>K-Pop</strong>
+          <small>Bright · playful · energetic</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="indie" name="music" value="indie">
+        <label for="indie">
+          <strong>Indie</strong>
+          <small>Fresh · curious · unexpected</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="pop" name="music" value="pop">
+        <label for="pop">
+          <strong>Pop</strong>
+          <small>Catchy · bright · social</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="hiphop" name="music" value="hiphop">
+        <label for="hiphop">
+          <strong>Hip-Hop / Rap</strong>
+          <small>Bold · confident · rich</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="rock" name="music" value="rock">
+        <label for="rock">
+          <strong>Rock / Alternative</strong>
+          <small>Raw · smoky · powerful</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="electronic" name="music" value="electronic">
+        <label for="electronic">
+          <strong>Electronic / Dance</strong>
+          <small>Electric · fizzy · energetic</small>
+        </label>
+      </div>
+
+      <div class="option">
+        <input type="radio" id="jazz" name="music" value="jazz">
+        <label for="jazz">
+          <strong>Jazz / Chill</strong>
+          <small>Elegant · mellow · timeless</small>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="step">
+
+    <div class="step-title">
+      02 / WHAT'S YOUR MOOD TONIGHT?
+    </div>
+
+    <div class="moods">
+
+      <div class="mood">
+        <input id="chill" type="radio" name="mood" value="Chill" checked>
+        <label for="chill">Chill</label>
+      </div>
+
+      <div class="mood">
+        <input id="social" type="radio" name="mood" value="Social">
+        <label for="social">Social</label>
+      </div>
+
+      <div class="mood">
+        <input id="emotional" type="radio" name="mood" value="Emotional">
+        <label for="emotional">Emotional</label>
+      </div>
+
+      <div class="mood">
+        <input id="bold" type="radio" name="mood" value="Bold">
+        <label for="bold">Bold</label>
+      </div>
+
+    </div>
+
+  </div>
+
+  <button class="generate" id="generate">
+    GENERATE MY DRINK →
+  </button>
+
+  <div class="hand">
+    A drink that sounds like you.
+  </div>
+
+</section>
+
+
+<!-- RIGHT -->
+<section class="menu">
+
+  <div class="menu-title">
+    SPOTIFY SIGNATURE DRINKS
+  </div>
+
+  <div class="menu-sub">
+    Inspired by music. Curated by genre, artist and mood.
+  </div>
+
+
+  <div class="drink-grid">
+
+    <article class="drink-card" data-drink="rnb">
+      <div class="drink-type">
+        R&B NIGHTS
+        <span class="price">HK$220</span>
+      </div>
+
+      <div class="ingredients">
+        Bourbon, Amaretto, Cocoa,<br>
+        Orange Bitters, Cherry
+      </div>
+
+      <div class="desc">
+        Smooth beats. Richer flavours.
+      </div>
+
+      <div class="doodle">♥</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="kpop">
+      <div class="drink-type">
+        K-POP SPOTLIGHT
+        <span class="price">HK$220</span>
+      </div>
+
+      <div class="ingredients">
+        Soju, Lychee, Peach,<br>
+        Lemon, Soda
+      </div>
+
+      <div class="desc">
+        Bright. Playful. Made for the night.
+      </div>
+
+      <div class="doodle">☆</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="indie">
+      <div class="drink-type">
+        INDIE DISCOVERY
+        <span class="price">HK$220</span>
+      </div>
+
+      <div class="ingredients">
+        Gin, Elderflower, Cucumber,<br>
+        Basil, Tonic
+      </div>
+
+      <div class="desc">
+        Light. Fresh. For what's next.
+      </div>
+
+      <div class="doodle">→</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="pop">
+      <div class="drink-type">
+        POP STAR SPRITZ
+        <span class="price">HK$220</span>
+      </div>
+
+      <div class="ingredients">
+        Vodka, Peach, Grapefruit,<br>
+        Prosecco, Soda
+      </div>
+
+      <div class="desc">
+        Bright. Sparkling. Impossible to skip.
+      </div>
+
+      <div class="doodle">★</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="hiphop">
+      <div class="drink-type">
+        GOLDEN FLOW
+        <span class="price">HK$240</span>
+      </div>
+
+      <div class="ingredients">
+        Bourbon, Honey, Ginger,<br>
+        Lemon, Bitters
+      </div>
+
+      <div class="desc">
+        Bold. Rich. Own the room.
+      </div>
+
+      <div class="doodle">$$</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="rock">
+      <div class="drink-type">
+        BACKSTAGE
+        <span class="price">HK$240</span>
+      </div>
+
+      <div class="ingredients">
+        Whisky, Smoked Tea, Lemon,<br>
+        Maple, Bitters
+      </div>
+
+      <div class="desc">
+        Raw. Smoky. Turn it up.
+      </div>
+
+      <div class="doodle">⚡</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="electronic">
+      <div class="drink-type">
+        NEON PULSE
+        <span class="price">HK$220</span>
+      </div>
+
+      <div class="ingredients">
+        Gin, Yuzu, Lime,<br>
+        Tonic, Soda
+      </div>
+
+      <div class="desc">
+        Electric. Fizzy. Built for the dance floor.
+      </div>
+
+      <div class="doodle">♫</div>
+    </article>
+
+
+    <article class="drink-card" data-drink="jazz">
+      <div class="drink-type">
+        BLUE NOTE
+        <span class="price">HK$240</span>
+      </div>
+
+      <div class="ingredients">
+        Cognac, Coffee, Vanilla,<br>
+        Orange Bitters
+      </div>
+
+      <div class="desc">
+        Deep. Elegant. Take it slow.
+      </div>
+
+      <div class="doodle">♪</div>
+    </article>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- RESULT -->
+
+<section class="result" id="result">
+
+  <div class="result-left">
+
+    <div class="glass">
+      <div class="liquid" id="liquid"></div>
+      <div class="ice one"></div>
+      <div class="ice two"></div>
+    </div>
+
+    <div class="music-lines">
+      ♫ Drink your playlist. ♫
+    </div>
+
+  </div>
+
+
+  <div class="result-right">
+
+    <div class="for-you">
+      ● SPOTIFY · MADE FOR YOU
+    </div>
+
+    <h2 id="resultName">
+      R&B DREAMER
+    </h2>
+
+    <div class="profile">
+      <span id="genreTag">R&B / Soul</span>
+      <span id="moodTag">Chill</span>
+      <span id="tasteTag">Soulful</span>
+    </div>
+
+    <div class="match-label">
+      YOUR SIGNATURE MATCH
+    </div>
+
+    <div class="signature-match" id="signatureMatch">
+      Inspired by R&B Nights
+    </div>
+
+    <div class="result-ingredients" id="resultIngredients">
+      Vodka, Blue Curaçao, Lychee, Lemon,
+      Elderflower, Soda
+    </div>
+
+    <div class="result-story" id="resultStory">
+      A smooth and dreamy blend inspired by your music taste —
+      capturing the calm, emotional and soulful side of your playlist.
+    </div>
+
+    <div class="result-price">
+      YOUR CUSTOMIZED DRINK · HK$250–300
+    </div>
+
+    <div class="result-hand">
+      A drink<br>
+      that sounds<br>
+      like you.
+    </div>
+
+  </div>
+
+</section>
+
+
+<footer class="footer">
+  <span>SPOTIFY BAR / HONG KONG</span>
+  <span>MUSIC · PEOPLE · DRINKS</span>
+</footer>
+
+</div>
+
+
+<script>
+
+const drinkProfiles = {
+
+  rnb: {
+    genre:"R&B / Soul",
+    signature:"R&B Nights",
+    name:"R&B DREAMER",
+    taste:"Soulful",
+    ingredients:
+      "Vodka, Blue Curaçao, Lychee, Lemon, Elderflower, Soda",
+    color:"#3489b8",
+    stories:{
+      Chill:
+        "A smooth and dreamy blend for slowing down with your favourite R&B tracks — soft, soulful and easy to stay with.",
+      Social:
+        "Smooth enough for the playlist, bright enough for the table — made for sharing good music with good company.",
+      Emotional:
+        "Soft, emotional and soulful — a drink for the songs you feel before you even understand the lyrics.",
+      Bold:
+        "Deep R&B character with a brighter edge — smooth at first, confident at the finish."
+    }
+  },
+
+
+  kpop: {
+    genre:"K-Pop",
+    signature:"K-Pop Spotlight",
+    name:"SEOUL SPARK",
+    taste:"Playful",
+    ingredients:
+      "Soju, Lychee, Peach, Lemon, Soda",
+    color:"#b8c86d",
+    stories:{
+      Chill:
+        "Light and fruity with a softer finish — your favourite K-Pop energy, just turned down for the evening.",
+      Social:
+        "Bright, playful and made to share — like the song everyone at the table already knows.",
+      Emotional:
+        "Sweet and sparkling with a softer side — for the K-Pop tracks that stay with you after the chorus ends.",
+      Bold:
+        "Bright flavours, sharp citrus and full energy — a drink that enters the room like a comeback stage."
+    }
+  },
+
+
+  indie: {
+    genre:"Indie",
+    signature:"Indie Discovery",
+    name:"FRESH FINDS",
+    taste:"Fresh",
+    ingredients:
+      "Gin, Elderflower, Cucumber, Basil, Tonic",
+    color:"#8caf79",
+    stories:{
+      Chill:
+        "Light, herbal and quietly refreshing — for discovering something new without trying too hard.",
+      Social:
+        "Fresh, easy and unexpected — made for swapping playlists and asking, “Who is this artist?”",
+      Emotional:
+        "Delicate, floral and a little nostalgic — like finding a small artist who somehow understands exactly how you feel.",
+      Bold:
+        "Fresh ingredients with an unexpected edge — for listeners who prefer finding the next sound before everyone else."
+    }
+  },
+
+
+  pop: {
+    genre:"Pop",
+    signature:"Pop Star Spritz",
+    name:"MAIN CHARACTER",
+    taste:"Bright",
+    ingredients:
+      "Vodka, Peach, Grapefruit, Prosecco, Soda",
+    color:"#e8877b",
+    stories:{
+      Chill:
+        "Easy, fruity and familiar — the drink version of a pop song you never skip.",
+      Social:
+        "Bright, sparkling and instantly likeable — made for big choruses, photos and a table full of friends.",
+      Emotional:
+        "Sweet at first with a bittersweet citrus finish — because even pop songs can break your heart.",
+      Bold:
+        "Bright, confident and impossible to ignore — tonight, the playlist is yours."
+    }
+  },
+
+
+  hiphop: {
+    genre:"Hip-Hop / Rap",
+    signature:"Golden Flow",
+    name:"GOLDEN FLOW",
+    taste:"Bold",
+    ingredients:
+      "Bourbon, Honey, Ginger, Lemon, Aromatic Bitters",
+    color:"#b77936",
+    stories:{
+      Chill:
+        "Warm bourbon and honey with a relaxed finish — low-key confidence, no need to prove anything.",
+      Social:
+        "Rich, smooth and built for the table — a confident drink for good conversation and better beats.",
+      Emotional:
+        "Warm, deep and slightly bittersweet — for the tracks where every line means something.",
+      Bold:
+        "Strong, sharp and confident — a drink with presence, rhythm and no background mode."
+    }
+  },
+
+
+  rock: {
+    genre:"Rock / Alternative",
+    signature:"Backstage",
+    name:"BACKSTAGE PASS",
+    taste:"Smoky",
+    ingredients:
+      "Whisky, Smoked Tea, Lemon, Maple, Aromatic Bitters",
+    color:"#8a4d3b",
+    stories:{
+      Chill:
+        "Smoky whisky softened with maple — the quieter moment after the amps go down.",
+      Social:
+        "Bold enough for a live set, smooth enough for another round — backstage energy without the noise.",
+      Emotional:
+        "Smoky, dark and slightly bittersweet — for the songs you played too loud when nobody was listening.",
+      Bold:
+        "Raw whisky, smoke and citrus — turn the volume up and let the drink do the rest."
+    }
+  },
+
+
+  electronic: {
+    genre:"Electronic / Dance",
+    signature:"Neon Pulse",
+    name:"NEON PULSE",
+    taste:"Electric",
+    ingredients:
+      "Gin, Yuzu, Lime, Tonic, Soda",
+    color:"#64aab5",
+    stories:{
+      Chill:
+        "Clean citrus and soft bubbles — electronic energy without needing the dance floor.",
+      Social:
+        "Bright, fizzy and made to move — the drink version of staying out for one more track.",
+      Emotional:
+        "Crisp at first, softer underneath — for electronic tracks that somehow feel bigger than words.",
+      Bold:
+        "Sharp citrus, bright bubbles and full energy — built for lights, bass and the middle of the dance floor."
+    }
+  },
+
+
+  jazz: {
+    genre:"Jazz / Chill",
+    signature:"Blue Note",
+    name:"BLUE NOTE",
+    taste:"Elegant",
+    ingredients:
+      "Cognac, Coffee, Vanilla, Orange Bitters",
+    color:"#684b43",
+    stories:{
+      Chill:
+        "Deep, warm and slow — a drink designed for staying a little longer than you planned.",
+      Social:
+        "Elegant but easy to talk over — made for long conversations, low lights and live music.",
+      Emotional:
+        "Warm coffee, vanilla and bitters — quiet, nostalgic and slightly bittersweet.",
+      Bold:
+        "Rich cognac and roasted notes with a confident finish — classic, but never background music."
+    }
+  }
+
+};
+
+
+const moodTaste = {
+  Chill:"Smooth",
+  Social:"Social",
+  Emotional:"Emotional",
+  Bold:"Bold"
+};
+
+
+document
+  .getElementById("generate")
+  .addEventListener("click", function(){
+
+    const music =
+      document.querySelector(
+        'input[name="music"]:checked'
+      ).value;
+
+    const mood =
+      document.querySelector(
+        'input[name="mood"]:checked'
+      ).value;
+
+    const drink =
+      drinkProfiles[music];
+
+
+    document
+      .querySelectorAll(".drink-card")
+      .forEach(card=>{
+        card.classList.remove("active");
+      });
+
+
+    const matchingCard =
+      document.querySelector(
+        '[data-drink="' + music + '"]'
+      );
+
+    if(matchingCard){
+      matchingCard.classList.add("active");
+    }
+
+
+    document
+      .getElementById("resultName")
+      .textContent =
+      drink.name;
+
+
+    document
+      .getElementById("genreTag")
+      .textContent =
+      drink.genre;
+
+
+    document
+      .getElementById("moodTag")
+      .textContent =
+      mood;
+
+
+    document
+      .getElementById("tasteTag")
+      .textContent =
+      mood === "Chill"
+      ? drink.taste
+      : moodTaste[mood];
+
+
+    document
+      .getElementById("signatureMatch")
+      .textContent =
+      "Inspired by " + drink.signature;
+
+
+    document
+      .getElementById("resultIngredients")
+      .textContent =
+      drink.ingredients;
+
+
+    document
+      .getElementById("resultStory")
+      .textContent =
+      drink.stories[mood];
+
+
+    document
+      .getElementById("liquid")
+      .style.background =
+      drink.color;
+
+
+    const result =
+      document.getElementById("result");
+
+    result.classList.add("show");
+
+
+    result.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+});
+
+</script>
+
+</body>
+</html>
